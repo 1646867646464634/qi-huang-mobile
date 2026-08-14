@@ -1,0 +1,173 @@
+/* ===== 岐黄·辅助诊疗系统 - 水墨画风格 ===== */
+
+/* === 宣纸纹理背景 === */
+.ink-background {
+    position: fixed;
+    inset: 0;
+    z-index: -10;
+    pointer-events: none;
+}
+
+.ink-texture {
+    position: absolute;
+    inset: 0;
+    background-color: var(--color-ink-bg);
+    background-image:
+        repeating-conic-gradient(
+            var(--color-ink-bg) 0% 25%,
+            transparent 0% 50%
+        ) 50% / 3px 3px;
+    background-size: 3px 3px;
+    opacity: 0.4;
+}
+
+/* 纸张纤维纹理叠加 */
+.ink-texture::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(90deg, rgba(44, 44, 44, 0.015) 1px, transparent 1px),
+        linear-gradient(rgba(44, 44, 44, 0.015) 1px, transparent 1px);
+    background-size: 4px 4px, 4px 4px;
+}
+
+/* === 水墨装饰元素 === */
+
+/* 远山装饰 */
+.ink-mountain {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 350px;
+    height: 220px;
+    pointer-events: none;
+    z-index: -5;
+    opacity: 0.1;
+}
+
+/* 竹叶装饰 */
+.ink-bamboo {
+    position: fixed;
+    bottom: 0;
+    left: -10px;
+    width: 160px;
+    height: 140px;
+    pointer-events: none;
+    z-index: -5;
+    opacity: 0.08;
+}
+
+/* 祥云装饰 */
+.ink-cloud {
+    position: fixed;
+    top: 15px;
+    right: 50px;
+    width: 100px;
+    height: 50px;
+    pointer-events: none;
+    z-index: -5;
+    opacity: 0.07;
+}
+
+/* === 动画 === */
+
+/* 水墨晕染展开 */
+@keyframes inkReveal {
+    0% {
+        clip-path: circle(0% at 50% 50%);
+        opacity: 0;
+    }
+    100% {
+        clip-path: circle(100% at 50% 50%);
+        opacity: 1;
+    }
+}
+
+.ink-reveal {
+    animation: inkReveal 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* 淡入 */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+/* 太极图缓慢旋转 */
+@keyframes slowRotate {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+/* === 回纹边框装饰 === */
+.fret-border {
+    position: relative;
+}
+
+.fret-border::before,
+.fret-border::after {
+    content: '';
+    position: absolute;
+    height: 2px;
+    left: 0;
+    right: 0;
+}
+
+.fret-border::before {
+    top: 0;
+    background: linear-gradient(90deg,
+        transparent,
+        var(--color-bronze-light) 20%,
+        var(--color-bronze) 50%,
+        var(--color-bronze-light) 80%,
+        transparent
+    );
+}
+
+.fret-border::after {
+    bottom: 0;
+    background: linear-gradient(90deg,
+        transparent,
+        var(--color-bronze-light) 20%,
+        var(--color-bronze) 50%,
+        var(--color-bronze-light) 80%,
+        transparent
+    );
+}
+
+/* === 印章效果 === */
+.seal-stamp {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border: 2px solid var(--color-vermillion);
+    border-radius: var(--radius-sm);
+    color: var(--color-vermillion);
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    font-weight: 700;
+    transform: rotate(-8deg);
+    background: rgba(192, 64, 64, 0.03);
+    flex-shrink: 0;
+}
+
+/* === 分割线（水墨渐变） === */
+.ink-divider {
+    height: 1px;
+    background: linear-gradient(90deg,
+        transparent,
+        var(--color-bronze-light) 20%,
+        var(--color-bronze) 50%,
+        var(--color-bronze-light) 80%,
+        transparent
+    );
+    margin: var(--space-lg) 0;
+    border: none;
+}

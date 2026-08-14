@@ -1,0 +1,128 @@
+/* ===== 岐黄·辅助诊疗系统 手机版适配修复 =====
+ * 在 features.css 之后引入（index.html 样式表最后）。
+ * 集中修复移动端"格式不对"的根因与细节：
+ *   P0 抽屉菜单被 backdrop-filter 劫持包含块 → 高度≈0 无法展开
+ *   P1 chat 页 100vh 键盘遮挡
+ *   P2 欢迎标题/内边距、搜索下拉、toast、触控反馈、字号缩放等
+ */
+
+/* ---------- P0：导航抽屉在移动端可正常展开 ----------
+ * 根因：.site-header 的 backdrop-filter 会为后代的 position:fixed 建立包含块，
+ * 导致 .site-nav 的 top/bottom 相对 56px 高的 header 计算 → 抽屉高度≈0。
+ * 修复：≤768px 时移除 header 的 backdrop-filter（背景已近不透明 0.98，视觉差异极小）。
+ */
+@media (max-width: 768px) {
+    .site-header {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+}
+
+/* ---------- P1：AI 问诊页适配小屏与键盘弹出 ----------
+ * 100vh 在 iOS Safari 不含地址栏；改用 100dvh（动态视口高度），
+ * 并将 min-height:480px 改为 0，避免小屏首屏放不下。
+ */
+@media (max-width: 768px) {
+    .chat-page {
+        height: calc(100dvh - 150px);
+        min-height: 0;
+    }
+}
+@supports not (height: 100dvh) {
+    @media (max-width: 768px) {
+        .chat-page {
+            height: calc(100vh - 150px);
+        }
+    }
+}
+
+/* ---------- P2：欢迎页标题与内边距在小屏缩放 ---------- */
+@media (max-width: 480px) {
+    .welcome-section {
+        padding: var(--space-xl) var(--space-md);
+    }
+    .welcome-title {
+        font-size: 1.75rem;
+        letter-spacing: 2px;
+    }
+}
+
+/* ---------- P2：全局搜索下拉不再右溢 ---------- */
+@media (max-width: 768px) {
+    .global-search-dropdown {
+        right: 0;
+        left: auto;
+        width: min(calc(100vw - 24px), 320px);
+    }
+    .global-search-input {
+        width: 100%;
+    }
+}
+
+/* ---------- P2：Toast 在窄屏不溢出 ---------- */
+@media (max-width: 480px) {
+    .toast-container {
+        right: 12px;
+        left: 12px;
+    }
+    .toast {
+        max-width: none;
+        width: 100%;
+        font-size: var(--text-sm);
+    }
+}
+
+/* ---------- P2：公式加减化裁表小屏横向可滚动 ---------- */
+@media (max-width: 768px) {
+    /* formula.js "加减化裁"表格位于 .detail-full 卡片内，条件列 nowrap，需横向滚动 */
+    .detail-full table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        white-space: nowrap;
+    }
+}
+
+/* ---------- P2：非按钮控件补触控按压反馈（尊重 prefers-reduced-motion） ---------- */
+@media (hover: none) and (prefers-reduced-motion: no-preference) {
+    .nav-item:active,
+    .welcome-card:active,
+    .symptom-chip:active,
+    .category-tab:active,
+    .option-btn:active,
+    .quiz-option:active,
+    .fav-card:active,
+    .study-card:active,
+    .form-option-chip:active,
+    .qc-group-header:active,
+    .list-item:active,
+    .upload-zone:active,
+    .chat-chip:active,
+    .quick-chip:active {
+        transform: scale(0.97);
+        opacity: 0.85;
+    }
+}
+
+/* ---------- P2：会话删除按钮触控目标放大 ---------- */
+@media (max-width: 768px) {
+    .chat-chip-del {
+        padding: 4px 8px;
+        margin-left: 6px;
+    }
+}
+
+/* ---------- P2：防止 iOS 自动调整字号 ---------- */
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
+/* ---------- P2：上传区文字与间距优化 ---------- */
+@media (max-width: 480px) {
+    .upload-text {
+        font-size: var(--text-sm);
+    }
+    .upload-hint {
+        font-size: var(--text-xs);
+    }
+}

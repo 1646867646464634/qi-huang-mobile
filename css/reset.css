@@ -1,0 +1,103 @@
+/* ===== 岐黄·辅助诊疗系统 - 样式重置 ===== */
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    line-height: 1.7;
+    color: var(--color-ink);
+    background-color: var(--color-ink-bg);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--color-ink-dark);
+}
+
+h1 { font-size: var(--text-4xl); }
+h2 { font-size: var(--text-3xl); }
+h3 { font-size: var(--text-2xl); }
+h4 { font-size: var(--text-xl); }
+
+p {
+    margin-bottom: var(--space-md);
+}
+
+a {
+    color: var(--color-vermillion);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+a:hover {
+    color: var(--color-vermillion-dark);
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+button {
+    font-family: var(--font-body);
+    cursor: pointer;
+    border: none;
+    /* 键盘焦点样式见下方 :focus-visible */
+}
+
+input, textarea, select {
+    font-family: var(--font-body);
+    /* 键盘焦点样式见下方 :focus-visible */
+}
+
+/* 键盘导航焦点（可访问性）：仅键盘 Tab 时显示清晰焦点环，鼠标点击不显示 */
+:focus-visible {
+    outline: 2px solid var(--color-vermillion);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+ul, ol {
+    list-style: none;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+/* 滚动条美化 */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-ink-bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-bronze-light);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-bronze);
+}

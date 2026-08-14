@@ -1,0 +1,88 @@
+/* ===== 岐黄·辅助诊疗系统 - CSS自定义属性 ===== */
+
+:root {
+    /* ===== 色彩系统 ===== */
+    
+    /* 墨色系 */
+    --color-ink:              #2C2C2C;
+    --color-ink-dark:         #1A1A1A;
+    --color-ink-light:        #666666;
+    --color-ink-pale:         #999999;
+    --color-ink-soft:         #5A534B;   /* 次级柔和文字 */
+    --color-ink-bg:           #F5F0EB;
+    --color-ink-bg-dark:      #EBE5DD;
+    
+    /* 界面色 */
+    --color-card:             #FBF8F4;   /* 卡片/表单背景 */
+    --color-line:             #E2D9CC;   /* 通用分隔线/描边 */
+    
+    /* 朱砂红系 */
+    --color-vermillion:       #C04040;
+    --color-vermillion-dark:  #8B1A1A;
+    --color-vermillion-light: #D47070;
+    --color-vermillion-pale:  rgba(192, 64, 64, 0.08);
+    
+    /* 古铜金系 */
+    --color-bronze:           #B8860B;
+    --color-bronze-light:     #CDAA7D;
+    --color-bronze-dark:      #8B6914;
+    --color-bronze-pale:      rgba(184, 134, 11, 0.12);
+    
+    /* 青花瓷蓝（点缀色） */
+    --color-blue-porcelain:   #3B5E8B;
+    --color-blue-light:       #5B7EB8;
+    --color-blue-pale:        rgba(59, 94, 139, 0.08);
+    
+    /* 功能色 */
+    --color-success:          #5B8B3B;
+    --color-warning:          #B8860B;
+    --color-danger:           #C04040;
+    --color-info:             #3B5E8B;
+    
+    /* ===== 字体系统 ===== */
+    --font-display:           'ZCOOL XiaoWei', '楷体', KaiTi, 'Noto Serif SC', serif;
+    --font-heading:           'Noto Serif SC', '仿宋', FangSong, '楷体', KaiTi, serif;
+    --font-body:              'Noto Serif SC', '仿宋', FangSong, '楷体', KaiTi, serif;
+    
+    /* ===== 字号系统 ===== */
+    --text-xs:    0.75rem;
+    --text-sm:    0.875rem;
+    --text-base:  1rem;
+    --text-lg:    1.125rem;
+    --text-xl:    1.25rem;
+    --text-2xl:   1.5rem;
+    --text-3xl:   1.875rem;
+    --text-4xl:   2.25rem;
+    
+    /* ===== 间距系统 ===== */
+    --space-xs:   0.25rem;
+    --space-sm:   0.5rem;
+    --space-md:   1rem;
+    --space-lg:   1.5rem;
+    --space-xl:   2rem;
+    --space-2xl:  3rem;
+    --space-3xl:  4rem;
+    
+    /* ===== 圆角 ===== */
+    --radius-sm:  4px;
+    --radius-md:  8px;
+    --radius-lg:  16px;
+    --radius-full: 9999px;
+    
+    /* ===== 阴影 ===== */
+    --shadow-card:        0 2px 12px rgba(26, 26, 26, 0.08);
+    --shadow-card-hover:  0 4px 20px rgba(26, 26, 26, 0.12);
+    --shadow-nav:         0 2px 8px rgba(26, 26, 26, 0.06);
+    --shadow-modal:       0 8px 32px rgba(26, 26, 26, 0.18);
+    
+    /* ===== 动画 ===== */
+    --transition-fast:     150ms ease;
+    --transition-normal:   300ms ease;
+    --transition-slow:     500ms ease;
+    
+    /* ===== 布局 ===== */
+    --header-height:        70px;
+    --nav-height-mobile:    56px;
+    --content-max-width:    1200px;
+    --sidebar-width:        280px;
+}

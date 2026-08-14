@@ -1,0 +1,377 @@
+/* ===== 岐黄·辅助诊疗系统 - 布局样式 ===== */
+
+/* === 整体结构 === */
+.site-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* === 顶部导航 === */
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-md) var(--space-xl);
+    min-height: var(--header-height);
+    background: linear-gradient(to bottom, rgba(245, 240, 235, 0.98), rgba(245, 240, 235, 0.93));
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(184, 134, 11, 0.18);
+    box-shadow: var(--shadow-nav);
+}
+
+/* Logo */
+.brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.brand-logo {
+    width: 42px;
+    height: 42px;
+    animation: slowRotate 20s linear infinite;
+}
+
+.brand-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.brand-title {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    color: var(--color-vermillion-dark);
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.brand-subtitle {
+    font-size: 11px;
+    color: var(--color-ink-light);
+    letter-spacing: 1px;
+}
+
+/* 导航菜单 */
+.site-nav {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px 6px;
+    flex: 1;
+    min-width: 0;
+}
+
+/* 导航分组标签：占满一行，避免被 nav-item 挤压 */
+.nav-group-label {
+    flex: 0 0 100%;
+    width: 100%;
+    font-size: var(--text-xs, 0.75rem);
+    font-weight: 600;
+    color: var(--color-bronze-dark, #8B6914);
+    letter-spacing: 2px;
+    padding: 14px 12px 6px;
+    margin: 0;
+    background: transparent;
+    border: none;
+    cursor: default;
+    user-select: none;
+    white-space: nowrap;
+    pointer-events: none;
+    font-family: var(--font-heading, serif);
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: var(--space-sm) var(--space-md);
+    min-width: 64px;
+    color: var(--color-ink-light);
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+    position: relative;
+    font-size: var(--text-sm);
+}
+
+.nav-item .nav-icon {
+    font-size: 18px;
+    line-height: 1;
+}
+
+.nav-item .nav-text {
+    font-size: var(--text-xs);
+    white-space: nowrap;
+}
+
+.nav-item:hover {
+    color: var(--color-vermillion);
+    background: var(--color-vermillion-pale);
+}
+
+.nav-item.active {
+    color: var(--color-vermillion-dark);
+    background: var(--color-vermillion-pale);
+}
+
+.nav-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 2px;
+    background: var(--color-vermillion);
+    border-radius: 1px;
+}
+
+/* 移动端汉堡菜单 */
+.mobile-toggle {
+    display: none;
+    background: none;
+    border: none;
+    padding: var(--space-sm);
+    cursor: pointer;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.mobile-toggle span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--color-ink);
+    border-radius: 1px;
+    transition: all var(--transition-fast);
+}
+
+.mobile-toggle.open span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+.mobile-toggle.open span:nth-child(2) {
+    opacity: 0;
+}
+.mobile-toggle.open span:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* === 内容区 === */
+.site-content {
+    flex: 1;
+    max-width: var(--content-max-width);
+    width: 100%;
+    margin: 0 auto;
+    padding: var(--space-2xl) var(--space-lg);
+}
+
+/* === 模块页面 === */
+.module-page {
+    animation: fadeIn 0.4s ease;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: var(--space-2xl);
+}
+
+.page-title {
+    font-family: var(--font-display);
+    font-size: var(--text-3xl);
+    color: var(--color-ink-dark);
+    margin-bottom: var(--space-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-md);
+}
+
+.page-subtitle {
+    color: var(--color-ink-light);
+    font-size: var(--text-sm);
+}
+
+/* === 底部 === */
+.site-footer {
+    text-align: center;
+    padding: var(--space-xl);
+    color: var(--color-ink-pale);
+    font-size: var(--text-xs);
+    border-top: 1px solid rgba(184, 134, 11, 0.1);
+}
+
+/* === Toast 通知 === */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.toast {
+    padding: var(--space-md) var(--space-lg);
+    border-radius: var(--radius-md);
+    color: #fff;
+    font-size: var(--text-sm);
+    box-shadow: var(--shadow-modal);
+    animation: fadeIn 0.3s ease;
+    max-width: 360px;
+}
+
+.toast-success { background: var(--color-success); }
+.toast-error   { background: var(--color-danger); }
+.toast-warning { background: var(--color-warning); }
+.toast-info    { background: var(--color-info); }
+
+/* === 弹窗/模态框 === */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26, 26, 26, 0.5);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.2s ease;
+    padding: var(--space-lg);
+}
+
+.modal-content {
+    background: var(--color-ink-bg);
+    border-radius: var(--radius-lg);
+    max-width: 720px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: var(--space-xl);
+    position: relative;
+    box-shadow: var(--shadow-modal);
+    border: 1px solid rgba(184, 134, 11, 0.2);
+}
+
+.modal-close {
+    position: absolute;
+    top: var(--space-md);
+    right: var(--space-md);
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--color-ink-light);
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all var(--transition-fast);
+}
+
+.modal-close:hover {
+    background: rgba(44, 44, 44, 0.08);
+    color: var(--color-ink);
+}
+
+.modal-title {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    color: var(--color-vermillion-dark);
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-md);
+    border-bottom: 1px solid rgba(184, 134, 11, 0.2);
+}
+
+/* === 响应式 === */
+@media (max-width: 768px) {
+    .site-header {
+        min-height: var(--nav-height-mobile);
+        padding: var(--space-sm) var(--space-md);
+    }
+
+    .brand-title {
+        font-size: var(--text-lg);
+    }
+
+    .brand-subtitle {
+        display: none;
+    }
+
+    .brand-logo {
+        width: 32px;
+        height: 32px;
+    }
+
+    .mobile-toggle {
+        display: flex;
+    }
+
+    .site-nav {
+        position: fixed;
+        top: var(--nav-height-mobile);
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(245, 240, 235, 0.98);
+        backdrop-filter: blur(12px);
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: stretch;
+        gap: 6px;
+        padding: var(--space-xl);
+        overflow-y: auto;
+        transform: translateX(100%);
+        transition: transform var(--transition-normal);
+        z-index: 99;
+    }
+
+    .site-nav.open {
+        transform: translateX(0);
+    }
+
+    .nav-group-label {
+        padding: 10px 4px 4px;
+        border-bottom: 1px solid rgba(184, 134, 11, 0.2);
+        margin-bottom: 4px;
+        flex: 0 0 auto;
+    }
+
+    .nav-item {
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: var(--space-sm);
+        padding: var(--space-md);
+        width: 100%;
+        font-size: var(--text-base);
+    }
+
+    .nav-item .nav-text {
+        font-size: var(--text-base);
+    }
+
+    .site-content {
+        padding: var(--space-lg) var(--space-md);
+    }
+
+    .page-title {
+        font-size: var(--text-2xl);
+    }
+}
+
+@media (max-width: 480px) {
+    .brand-subtitle {
+        display: none;
+    }
+    
+    .modal-content {
+        padding: var(--space-lg);
+    }
+}
