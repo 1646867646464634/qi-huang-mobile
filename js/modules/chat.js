@@ -31,7 +31,6 @@ class ChatModule {
         this.activeSession = null;     // 当前会话对象（未落盘，流式中）
         this.abortController = null;   // 停止按钮
         this.streaming = false;
-        this._serviceOk = null;        // AI 代理可达性缓存（null=未探测/false=不可达）
     }
 
     destroy() {
@@ -87,8 +86,6 @@ class ChatModule {
                     <button class="btn btn-ghost" id="chatStopBtn" style="display:none;">⏹ 停止</button>
                 </div>
 
-                <div id="chatServiceStatus" style="display:none; margin:8px 0; padding:8px 12px; border-radius:8px; font-size:var(--text-sm); line-height:1.7;"></div>
-
                 <div style="margin-top:var(--space-md); font-size:var(--text-xs); color:var(--color-ink-pale); line-height:1.9;">
                     <p><strong>免责声明：</strong>本系统仅供中医知识学习和健康参考，不构成医疗诊断或治疗建议。如有身体不适，请及时前往正规医疗机构就诊，遵循专业医师的指导。</p>
                     <p>⚠ 提示：对话内容将发送至第三方 AI 服务（智谱 GLM-4.7）处理，请勿输入手机号、身份证等隐私信息；对话记录仅保存在本机浏览器。</p>
@@ -99,27 +96,6 @@ class ChatModule {
         this.bindEvents(container);
         this._renderSessions(container);
         this._renderMessages(container);
-        this._checkServiceStatus(container);
-    }
-
-    // 手机端降级：探测 AI 代理可达性，不可达时提示而非卡等待（方案 3）
-    async _checkServiceStatus(container) {
-        const el = container.querySelector('#chatServiceStatus');
-        if (!el || typeof GLMChat === 'undefined' || !GLMChat.pingProxy) return;
-        try {
-            const ok = await GLMChat.pingProxy();
-            if (ok) {
-                el.style.display = 'none';
-                this._serviceOk = true;
-            } else {
-                el.style.display = 'block';
-                el.style.background = 'rgba(184,134,11,0.1)';
-                el.style.border = '1px solid rgba(184,134,11,0.35)';
-                el.style.color = 'var(--color-bronze-dark)';
-                el.textContent = '⚠ 当前网络无法连接 AI 服务，在线问诊暂不可用。您仍可使用体质辨识、病症辨证、中药百科等本地功能，或检查网络后刷新重试。';
-                this._serviceOk = false;
-            }
-        } catch (e) { /* 忽略，允许继续 */ }
     }
 
     bindEvents(container) {
@@ -225,14 +201,18 @@ class ChatModule {
     }
 
     _renderBubble(msg, container) {
+        // 渲染防御：历史消息 content 可能是对象（旧版脏数据），强制转字符串，避免显示 [object Object]
+        const content = typeof msg.content === 'string' ? msg.content
+            : (msg.content && typeof msg.content.message === 'string') ? msg.content.message
+            : '';
         const wrap = document.createElement('div');
         if (msg.role === 'user') {
             wrap.className = 'msg-bubble msg-user';
-            wrap.textContent = msg.content;
+            wrap.textContent = content;
         } else {
             wrap.className = 'msg-bubble msg-ai';
             const text = document.createElement('div');
-            text.textContent = msg.content;
+            text.textContent = content;
             wrap.appendChild(text);
             if (msg.reasoning) {
                 const fold = document.createElement('div');
@@ -245,7 +225,7 @@ class ChatModule {
                 wrap.appendChild(fold);
                 wrap.appendChild(body);
             }
-            this._maybeAddSyndromeLink(wrap, msg.content, container);
+            this._maybeAddSyndromeLink(wrap, content, container);
         }
         return wrap;
     }
@@ -278,10 +258,6 @@ class ChatModule {
         const raw = (input && input.value || '').trim();
         if (!raw) return;
         if (typeof GLMChat === 'undefined') { Toast.show('AI 对话组件未加载', 'warning'); return; }
-        if (this._serviceOk === false) {
-            Toast.show('AI 服务当前不可用，请检查网络或稍后重试', 'warning');
-            return;
-        }
         if (!GLMChat.checkFrontRateLimit()) {
             Toast.show('发送太频繁，请 60 秒后再试', 'warning');
             return;
@@ -299,8 +275,13 @@ class ChatModule {
         if (typeof Profile !== 'undefined' && Profile.get) profile = Profile.get();
         if (typeof Records !== 'undefined' && Records.list) recent = Records.list().slice(0, 3);
         const system = GLMChat.buildSystemPrompt(profile, recent);
+        // 关键修复：历史消息 content 强制转字符串，防止脏数据（对象/数组）原样发给 GLM
+        // 导致模型把 "[object Object]" 当文本回复
         const apiMessages = [{ role: 'system', content: system }]
-            .concat(session.messages.map(m => ({ role: m.role, content: m.content })));
+            .concat(session.messages.map(m => ({
+                role: m.role,
+                content: typeof m.content === 'string' ? m.content : (m.content && m.content.message) || String(m.content || '')
+            })));
 
         // 4. 渲染（前端模拟打字效果，实际由代理非流式一次性返回完整文本）
         this.abortController = new AbortController();
@@ -350,7 +331,8 @@ class ChatModule {
         session.messages.push({ role: 'assistant', content: reply, time: Date.now() });
         if (!session.title || session.title === '新会话') {
             const first = session.messages.find(m => m.role === 'user');
-            session.title = (first ? first.content : '新会话').slice(0, 15);
+            const firstText = first && typeof first.content === 'string' ? first.content : '';
+            session.title = (firstText || '新会话').slice(0, 15);
         }
         ChatSessions.save(session);
         this.activeSessionId = session.id;
@@ -408,9 +390,10 @@ class ChatModule {
         }
         const lines = ['# 岐黄 AI 问诊记录', '', '时间：' + new Date(session.time).toLocaleString('zh-CN'), '标题：' + session.title, ''];
         session.messages.forEach(m => {
+            const c = typeof m.content === 'string' ? m.content : (m.content && typeof m.content.message === 'string' ? m.content.message : '');
             lines.push('## ' + (m.role === 'user' ? '用户' : 'AI 助手') + '（' + new Date(m.time).toLocaleString('zh-CN') + '）');
             lines.push('');
-            lines.push(m.content);
+            lines.push(c);
             lines.push('');
         });
         lines.push('---');
