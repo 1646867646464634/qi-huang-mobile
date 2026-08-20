@@ -4,7 +4,7 @@
 
 const GLM_CHAT_CONFIG = {
     proxyUrl: 'https://qi-huang-123.vercel.app/api/glm',
-    model: 'glm-4.7-flash',          // 免费文本对话模型（200K 上下文，思考模型）
+    model: 'glm-4.5-flash',          // 免费通用模型（128K，非思考模型，独立并发槽，避开 4.7 拥堵/思考异常）
     enabled: true,
     timeoutMs: 60000,                // Vercel 函数 maxDuration=60s 上限对齐
     maxTokens: 4096,                 // 关闭 thinking 后 4K 足够
