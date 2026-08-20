@@ -4,12 +4,13 @@
 
 const GLM_CHAT_CONFIG = {
     proxyUrl: 'https://qi-huang-123.vercel.app/api/glm',
-    model: 'glm-4.7-flash',          // 免费文本对话模型（200K 上下文）
+    model: 'glm-4.7-flash',          // 免费文本对话模型（200K 上下文，思考模型）
     enabled: true,
     timeoutMs: 60000,                // Vercel 函数 maxDuration=60s 上限对齐
     maxTokens: 4096,                 // 关闭 thinking 后 4K 足够
     temperature: 0.7,
-    thinking: { type: 'disabled' },  // 智谱 thinking 关闭：避免 1 并发排队 + 思考慢导致超时（问诊场景追求快速反馈）
+    // 不传 thinking：GLM-4.7-Flash 是思考模型，传 disabled 可能导致模型把异常字段写入 content
+    // 让模型用默认行为（启用思考），前端只取 content 字符串（rejection/空内容都有防御）
     // 前端本地限流（localStorage 计数，60s 内 ≤8 次）
     RATE_KEY: 'tcm_chat_ratelimit',
     RATE_WINDOW_MS: 60000,
@@ -110,30 +111,6 @@ function _classifyHttpError(status) {
 }
 
 /**
- * 代理健康探测（快速，5s 超时）：用于手机端网络不佳时提前降级，避免用户等待超时。
- * @returns {Promise<boolean>} true=可达
- */
-async function pingProxy() {
-    if (!GLM_CHAT_CONFIG.enabled || !GLM_CHAT_CONFIG.proxyUrl) return false;
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 5000);
-    try {
-        // 发一个最小 POST（空消息会被代理 400 拒绝，但只要能收到响应即代表链路通）
-        const resp = await fetch(GLM_CHAT_CONFIG.proxyUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ messages: [] }),
-            signal: controller.signal
-        });
-        return true; // 400/405 均说明代理可达
-    } catch (e) {
-        return false;
-    } finally {
-        clearTimeout(timer);
-    }
-}
-
-/**
  * 流式对话（SSE）
  * @param {Array} messages 完整上下文（已含 system + 历史 + 新 user 消息）
  * @param {{onDelta?:function(string), onReasoning?:function(string), signal?:AbortSignal}} opts
@@ -158,9 +135,9 @@ async function streamChat(messages, opts) {
     const payload = {
         model: GLM_CHAT_CONFIG.model,
         messages: messages,
+        // 不传 thinking：让 GLM-4.7-Flash 用默认思考行为（content 字符串 + reasoning_content 可选）
         // 不传 stream：非流式 POST 一次性返回完整 JSON。Vercel Node runtime 对 SSE 流式支持不佳（连接池满/缓冲），
         // 非流式 2s 内返回，体验稳定。流式打字效果改为前端 setInterval 模拟。
-        thinking: GLM_CHAT_CONFIG.thinking,
         max_tokens: GLM_CHAT_CONFIG.maxTokens,
         temperature: GLM_CHAT_CONFIG.temperature
     };
@@ -269,8 +246,7 @@ const GLMChat = {
     streamChat: streamChat,
     buildSystemPrompt: buildSystemPrompt,
     sanitize: sanitize,
-    checkFrontRateLimit: checkFrontRateLimit,
-    pingProxy: pingProxy
+    checkFrontRateLimit: checkFrontRateLimit
 };
 
 if (typeof window !== 'undefined') window.GLMChat = GLMChat;
