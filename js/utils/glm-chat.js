@@ -162,7 +162,9 @@ async function streamChat(messages, opts) {
         let msg = null;
         try { const d = await resp.json(); msg = d && (d.message || d.error); } catch (e) {}
         const e = _classifyHttpError(resp.status);
-        if (msg) e.message = msg;
+        // 关键修复：智谱 429 限流可能返回 {"error":{...}} 嵌套结构，msg 可能是对象
+        // 只接受字符串 message，避免 [object Object] 渗入前端气泡
+        if (typeof msg === 'string') e.message = msg;
         throw e;
     }
     if (!resp.body) throw { code: 'BAD_RESPONSE', message: 'AI 返回格式异常' };
